@@ -1,7 +1,10 @@
 import { Inngest } from "inngest";
 
 // Create a client to send and receive events
-export const inngest = new Inngest({ id: "project-management" });
+export const inngest = new Inngest({
+  id: "project-management",
+  signingKey: process.env.INNGEST_SIGNING_KEY, // ✅ added this line
+});
 
 const syncUserCreation = inngest.createFunction(
   { id: "sync--user-from-clerk" },

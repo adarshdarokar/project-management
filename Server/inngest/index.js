@@ -1,11 +1,22 @@
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+import { PrismaNeon } from '@prisma/adapter-neon';
+import { neonConfig } from '@neondatabase/serverless';
+import ws from 'ws';
 import { Inngest } from "inngest";
 
-// Create a client to send and receive events
+// ---- Prisma Setup ----
+neonConfig.webSocketConstructor = ws;
+const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
+
+// ---- Inngest Setup ----
 export const inngest = new Inngest({
   id: "project-management",
   signingKey: process.env.INNGEST_SIGNING_KEY, // ✅ added this line
 });
 
+// ---- Functions ----
 const syncUserCreation = inngest.createFunction(
   { id: "sync--user-from-clerk" },
   { event: "clerk/user.created" },
@@ -53,7 +64,7 @@ const syncUserUpdation = inngest.createFunction(
   }
 );
 
-// Create an empty array where we'll export future Inngest functions
+// ---- Exports ----
 export const functions = [
   syncUserCreation,
   syncUserDeletion,

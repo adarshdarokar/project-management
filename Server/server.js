@@ -6,7 +6,7 @@ import { inngest, functions } from "./inngest/index.js"
 import { serve } from "inngest/express";
 
 const app = express()
-
+``
 
 app.use(clerkMiddleware())
 app.use (express.json());
